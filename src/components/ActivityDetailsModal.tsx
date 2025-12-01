@@ -3,6 +3,7 @@ import { X, MapPin, Calendar, User, Phone, IndianRupee, Trash2, Edit, Save, Uplo
 import { useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
+import NextImage from "next/image";
 
 interface ActivityDetailsModalProps {
     activity: any;
@@ -204,36 +205,36 @@ export default function ActivityDetailsModal({ activity, onClose, onDelete, onUp
                             </h3>
                             <div className="space-y-4">
                                 <div>
-                                    <p className="text-xs text-secondary-500 mb-1">Mobile Number</p>
+                                    <label className="text-xs text-secondary-500 block mb-1">Mobile Number</label>
                                     {isEditing ? (
                                         <input
                                             type="text"
                                             name="farmerMobile"
                                             value={formData.farmerMobile}
                                             onChange={handleInputChange}
-                                            className="w-full px-3 py-2 rounded-lg border border-secondary-200 dark:border-secondary-700 bg-white dark:bg-secondary-900 text-secondary-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
+                                            className="w-full bg-white dark:bg-secondary-900 border border-secondary-200 dark:border-secondary-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500"
                                         />
                                     ) : (
-                                        <p className="font-medium text-secondary-900 dark:text-white flex items-center">
-                                            <Phone className="w-3 h-3 mr-2 text-secondary-400" />
+                                        <div className="flex items-center font-medium text-secondary-900 dark:text-white">
+                                            <Phone className="w-4 h-4 mr-2 text-secondary-400" />
                                             {activity.farmerMobile}
-                                        </p>
+                                        </div>
                                     )}
                                 </div>
                                 <div>
-                                    <p className="text-xs text-secondary-500 mb-1">Farmers Involved</p>
+                                    <label className="text-xs text-secondary-500 block mb-1">Crop / Hybrid</label>
                                     {isEditing ? (
                                         <input
-                                            type="number"
-                                            name="farmersInvolved"
-                                            value={formData.farmersInvolved}
+                                            type="text"
+                                            name="cropOrHybrid"
+                                            value={formData.cropOrHybrid}
                                             onChange={handleInputChange}
-                                            className="w-full px-3 py-2 rounded-lg border border-secondary-200 dark:border-secondary-700 bg-white dark:bg-secondary-900 text-secondary-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
+                                            className="w-full bg-white dark:bg-secondary-900 border border-secondary-200 dark:border-secondary-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500"
                                         />
                                     ) : (
-                                        <p className="font-medium text-secondary-900 dark:text-white">
-                                            {activity.farmersInvolved}
-                                        </p>
+                                        <div className="font-medium text-secondary-900 dark:text-white">
+                                            {activity.cropOrHybrid}
+                                        </div>
                                     )}
                                 </div>
                             </div>
@@ -241,69 +242,74 @@ export default function ActivityDetailsModal({ activity, onClose, onDelete, onUp
 
                         <div className="bg-secondary-50 dark:bg-secondary-800/50 rounded-xl p-5 border border-secondary-100 dark:border-secondary-800">
                             <h3 className="text-sm font-semibold text-secondary-900 dark:text-white mb-4 flex items-center uppercase tracking-wider">
-                                <IndianRupee className="w-4 h-4 mr-2 text-primary-500" />
-                                Crop & Expense
+                                <FileText className="w-4 h-4 mr-2 text-primary-500" />
+                                Activity Stats
                             </h3>
                             <div className="space-y-4">
                                 <div>
-                                    <p className="text-xs text-secondary-500 mb-1">Crop / Hybrid</p>
-                                    {isEditing ? (
-                                        <input
-                                            type="text"
-                                            name="cropOrHybrid"
-                                            value={formData.cropOrHybrid}
-                                            onChange={handleInputChange}
-                                            className="w-full px-3 py-2 rounded-lg border border-secondary-200 dark:border-secondary-700 bg-white dark:bg-secondary-900 text-secondary-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
-                                        />
-                                    ) : (
-                                        <p className="font-medium text-secondary-900 dark:text-white">
-                                            {activity.cropOrHybrid}
-                                        </p>
-                                    )}
-                                </div>
-                                <div>
-                                    <p className="text-xs text-secondary-500 mb-1">Tentative Expense</p>
+                                    <label className="text-xs text-secondary-500 block mb-1">Farmers Involved</label>
                                     {isEditing ? (
                                         <input
                                             type="number"
-                                            name="tentativeExpense"
-                                            value={formData.tentativeExpense}
+                                            name="farmersInvolved"
+                                            value={formData.farmersInvolved}
                                             onChange={handleInputChange}
-                                            className="w-full px-3 py-2 rounded-lg border border-secondary-200 dark:border-secondary-700 bg-white dark:bg-secondary-900 text-secondary-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
+                                            className="w-full bg-white dark:bg-secondary-900 border border-secondary-200 dark:border-secondary-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500"
                                         />
                                     ) : (
-                                        <p className="font-medium text-emerald-600 dark:text-emerald-400">
-                                            ₹ {activity.tentativeExpense}
-                                        </p>
+                                        <div className="flex items-center font-medium text-secondary-900 dark:text-white">
+                                            <Users className="w-4 h-4 mr-2 text-secondary-400" />
+                                            {activity.farmersInvolved}
+                                        </div>
                                     )}
                                 </div>
+                                {(isRBM || activity.creatorId === session?.user?.id) && (
+                                    <div>
+                                        <label className="text-xs text-secondary-500 block mb-1">Tentative Expense</label>
+                                        {isEditing ? (
+                                            <input
+                                                type="number"
+                                                name="tentativeExpense"
+                                                value={formData.tentativeExpense}
+                                                onChange={handleInputChange}
+                                                className="w-full bg-white dark:bg-secondary-900 border border-secondary-200 dark:border-secondary-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500"
+                                            />
+                                        ) : (
+                                            <div className="flex items-center font-medium text-emerald-600 dark:text-emerald-400">
+                                                <IndianRupee className="w-4 h-4 mr-2" />
+                                                {activity.tentativeExpense}
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
 
-                    <div className="space-y-8">
-                        {/* Description Section if needed, though not in original props, adding placeholder logic if description exists */}
-                        {activity.description && (
-                            <div>
-                                <h3 className="text-lg font-semibold text-secondary-900 dark:text-white mb-3 flex items-center">
-                                    <FileText className="w-5 h-5 mr-2 text-primary-500" />
-                                    Description
-                                </h3>
-                                {isEditing ? (
-                                    <textarea
-                                        name="description"
-                                        value={formData.description}
-                                        onChange={handleInputChange}
-                                        className="w-full p-4 border border-secondary-200 dark:border-secondary-700 rounded-xl bg-secondary-50 dark:bg-secondary-800 text-secondary-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
-                                        rows={4}
-                                        placeholder="Describe the activity..."
-                                    />
-                                ) : (
+                    <div className="mb-8">
+                        {isEditing ? (
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-2">
+                                    Description / Remarks
+                                </label>
+                                <textarea
+                                    name="description" // Assuming there is a description field, though not explicitly in model shown earlier, but good for UX
+                                    value={formData.description || ""}
+                                    onChange={handleInputChange}
+                                    rows={3}
+                                    className="w-full bg-white dark:bg-secondary-900 border border-secondary-200 dark:border-secondary-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                    placeholder="Add any additional notes..."
+                                />
+                            </div>
+                        ) : (
+                            activity.description && (
+                                <div className="bg-secondary-50 dark:bg-secondary-800/30 rounded-xl p-5 border border-secondary-100 dark:border-secondary-800 mb-6">
+                                    <h3 className="text-sm font-semibold text-secondary-900 dark:text-white mb-2">Remarks</h3>
                                     <p className="text-secondary-600 dark:text-secondary-300 whitespace-pre-wrap leading-relaxed">
                                         {activity.description}
                                     </p>
-                                )}
-                            </div>
+                                </div>
+                            )
                         )}
 
                         <div>
@@ -316,10 +322,12 @@ export default function ActivityDetailsModal({ activity, onClose, onDelete, onUp
                                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                                     {formData.photos.map((photo: any, index: number) => (
                                         <div key={index} className="relative aspect-video group rounded-xl overflow-hidden shadow-sm border border-secondary-200 dark:border-secondary-800">
-                                            <img
+                                            <NextImage
                                                 src={photo.url}
                                                 alt={`Activity photo ${index + 1}`}
-                                                className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
+                                                fill
+                                                className="object-cover transition-transform duration-500 group-hover:scale-110"
+                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                             />
                                             {isEditing ? (
                                                 <button
@@ -336,111 +344,119 @@ export default function ActivityDetailsModal({ activity, onClose, onDelete, onUp
                                                     rel="noopener noreferrer"
                                                     className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100"
                                                 >
-                                                    <span className="bg-white/90 text-secondary-900 text-xs font-medium px-3 py-1 rounded-full shadow-lg">View Full</span>
+                                                    <span className="bg-white/90 text-secondary-900 text-xs font-medium px-3 py-1.5 rounded-full shadow-lg transform translate-y-2 group-hover:translate-y-0 transition-transform">
+                                                        View Full
+                                                    </span>
                                                 </a>
                                             )}
                                         </div>
                                     ))}
                                 </div>
                             ) : (
-                                <p className="text-secondary-500 italic">No photos available.</p>
+                                <div className="text-center py-8 bg-secondary-50 dark:bg-secondary-800/30 rounded-xl border border-dashed border-secondary-300 dark:border-secondary-700">
+                                    <ImageIcon className="w-10 h-10 text-secondary-300 mx-auto mb-2" />
+                                    <p className="text-secondary-500">No photos uploaded</p>
+                                </div>
+                            )}
+
+                            {isEditing && (
+                                <div className="mt-4">
+                                    <label className="flex items-center justify-center w-full h-32 px-4 transition bg-white dark:bg-secondary-900 border-2 border-secondary-300 dark:border-secondary-700 border-dashed rounded-xl appearance-none cursor-pointer hover:border-primary-500 focus:outline-none">
+                                        <span className="flex flex-col items-center space-y-2">
+                                            <Upload className="w-6 h-6 text-secondary-400" />
+                                            <span className="font-medium text-secondary-600 dark:text-secondary-400">
+                                                Drop files to Attach, or <span className="text-primary-600 underline">browse</span>
+                                            </span>
+                                            <span className="text-xs text-secondary-500">Supported: JPG, PNG</span>
+                                        </span>
+                                        <input
+                                            type="file"
+                                            name="file_upload"
+                                            className="hidden"
+                                            accept="image/*"
+                                            multiple
+                                            onChange={handleFileChange}
+                                        />
+                                    </label>
+                                    {newFiles.length > 0 && (
+                                        <div className="mt-4 space-y-2">
+                                            <p className="text-sm font-medium text-secondary-700 dark:text-secondary-300">New files to upload:</p>
+                                            {newFiles.map((file, index) => (
+                                                <div key={index} className="flex items-center justify-between bg-secondary-50 dark:bg-secondary-800 px-3 py-2 rounded-lg text-sm">
+                                                    <span className="truncate max-w-[200px] text-secondary-600 dark:text-secondary-300">{file.name}</span>
+                                                    <button onClick={() => removeNewFile(index)} className="text-red-500 hover:text-red-700">
+                                                        <X className="w-4 h-4" />
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
                             )}
                         </div>
-
-                        {isRBM && isEditing && (
-                            <div className="bg-secondary-50 dark:bg-secondary-800/50 rounded-xl p-6 border border-dashed border-secondary-300 dark:border-secondary-700">
-                                <label className="block text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-4">
-                                    Add New Photos
-                                </label>
-                                <div className="flex flex-col items-center justify-center w-full">
-                                    <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-primary-100 border-dashed rounded-xl cursor-pointer bg-white dark:bg-secondary-900 hover:bg-primary-50 dark:hover:bg-secondary-800 transition-colors group">
-                                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                            <div className="p-3 bg-primary-50 dark:bg-secondary-800 rounded-full mb-3 group-hover:scale-110 transition-transform">
-                                                <Upload className="w-6 h-6 text-primary-500" />
-                                            </div>
-                                            <p className="mb-1 text-sm text-secondary-500 dark:text-secondary-400">
-                                                <span className="font-semibold text-primary-600">Click to upload</span> or drag and drop
-                                            </p>
-                                            <p className="text-xs text-secondary-400">SVG, PNG, JPG or GIF</p>
-                                        </div>
-                                        <input type="file" className="hidden" multiple accept="image/*" onChange={handleFileChange} />
-                                    </label>
-                                </div>
-                                {newFiles.length > 0 && (
-                                    <div className="mt-4 grid grid-cols-2 gap-3">
-                                        {newFiles.map((file, index) => (
-                                            <div key={index} className="relative p-3 border border-secondary-200 dark:border-secondary-700 rounded-lg bg-white dark:bg-secondary-900 flex items-center justify-between shadow-sm">
-                                                <div className="flex items-center overflow-hidden">
-                                                    <div className="w-8 h-8 bg-secondary-100 dark:bg-secondary-800 rounded flex items-center justify-center mr-3 flex-shrink-0">
-                                                        <ImageIcon className="w-4 h-4 text-secondary-500" />
-                                                    </div>
-                                                    <span className="text-xs font-medium text-secondary-700 dark:text-secondary-300 truncate">{file.name}</span>
-                                                </div>
-                                                <button
-                                                    onClick={() => removeNewFile(index)}
-                                                    className="p-1 text-secondary-400 hover:text-red-500 transition-colors"
-                                                >
-                                                    <X className="w-4 h-4" />
-                                                </button>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        )}
                     </div>
 
-                    <div className="mt-8 pt-6 border-t border-secondary-200 dark:border-secondary-800 flex justify-end gap-3">
-                        {isRBM && !isEditing && (
-                            <>
-                                <button
-                                    onClick={handleDelete}
-                                    disabled={deleting}
-                                    className="flex items-center px-5 py-2.5 text-red-600 bg-red-50 hover:bg-red-100 rounded-xl transition-colors dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30 font-medium text-sm"
-                                >
-                                    <Trash2 className="w-4 h-4 mr-2" />
-                                    {deleting ? "Deleting..." : "Delete Activity"}
-                                </button>
-                                <button
-                                    onClick={() => setIsEditing(true)}
-                                    className="flex items-center px-5 py-2.5 text-white bg-primary-600 hover:bg-primary-700 rounded-xl shadow-lg shadow-primary-600/20 transition-all hover:scale-105 font-medium text-sm"
-                                >
-                                    <Edit className="w-4 h-4 mr-2" />
-                                    Edit Activity
-                                </button>
-                            </>
-                        )}
-                        {isEditing && (
-                            <>
-                                <button
-                                    onClick={() => {
-                                        setIsEditing(false);
-                                        setFormData(activity);
-                                        setNewFiles([]);
-                                    }}
-                                    className="px-5 py-2.5 text-secondary-700 bg-white border border-secondary-300 rounded-xl hover:bg-secondary-50 dark:bg-secondary-800 dark:text-secondary-300 dark:border-secondary-700 dark:hover:bg-secondary-700 transition-colors font-medium text-sm"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    onClick={handleSave}
-                                    disabled={saving}
-                                    className="flex items-center px-5 py-2.5 text-white bg-primary-600 hover:bg-primary-700 rounded-xl shadow-lg shadow-primary-600/20 transition-all hover:scale-105 disabled:opacity-50 font-medium text-sm"
-                                >
-                                    <Save className="w-4 h-4 mr-2" />
-                                    {saving ? "Saving..." : "Save Changes"}
-                                </button>
-                            </>
-                        )}
-                        {!isRBM && (
-                            <button
-                                onClick={onClose}
-                                className="px-5 py-2.5 text-secondary-700 bg-secondary-100 hover:bg-secondary-200 rounded-xl transition-colors dark:bg-secondary-800 dark:text-secondary-300 dark:hover:bg-secondary-700 font-medium text-sm"
-                            >
-                                Close
-                            </button>
-                        )}
-                    </div>
+                    {(isRBM || activity.creatorId === session?.user?.id) && (
+                        <div className="flex justify-end gap-4 pt-6 border-t border-secondary-100 dark:border-secondary-800">
+                            {isEditing ? (
+                                <>
+                                    <button
+                                        onClick={() => setIsEditing(false)}
+                                        className="px-6 py-2.5 rounded-xl border border-secondary-300 dark:border-secondary-700 text-secondary-700 dark:text-secondary-300 font-medium hover:bg-secondary-50 dark:hover:bg-secondary-800 transition-colors"
+                                        disabled={saving}
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        onClick={handleSave}
+                                        disabled={saving}
+                                        className="px-6 py-2.5 rounded-xl bg-primary-600 text-white font-medium hover:bg-primary-700 shadow-lg shadow-primary-600/20 transition-all hover:scale-105 flex items-center disabled:opacity-70 disabled:cursor-not-allowed"
+                                    >
+                                        {saving ? (
+                                            <>
+                                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                                                Saving...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Save className="w-4 h-4 mr-2" />
+                                                Save Changes
+                                            </>
+                                        )}
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    {isRBM && (
+                                        <button
+                                            onClick={handleDelete}
+                                            disabled={deleting}
+                                            className="px-6 py-2.5 rounded-xl border border-red-200 dark:border-red-900/30 text-red-600 dark:text-red-400 font-medium hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors flex items-center disabled:opacity-70"
+                                        >
+                                            {deleting ? (
+                                                <>
+                                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-600 mr-2"></div>
+                                                    Deleting...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Trash2 className="w-4 h-4 mr-2" />
+                                                    Delete
+                                                </>
+                                            )}
+                                        </button>
+                                    )}
+                                    <button
+                                        onClick={() => setIsEditing(true)}
+                                        className="px-6 py-2.5 rounded-xl bg-primary-600 text-white font-medium hover:bg-primary-700 shadow-lg shadow-primary-600/20 transition-all hover:scale-105 flex items-center"
+                                    >
+                                        <Edit className="w-4 h-4 mr-2" />
+                                        Edit Activity
+                                    </button>
+                                </>
+                            )}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

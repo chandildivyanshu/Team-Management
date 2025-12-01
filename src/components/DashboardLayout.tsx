@@ -18,6 +18,7 @@ import {
 import { useState } from "react";
 import clsx from "clsx";
 import { useTheme } from "@/components/ThemeProvider";
+import NextImage from "next/image";
 
 export default function DashboardLayout({
     children,
@@ -71,9 +72,9 @@ export default function DashboardLayout({
 
                     <div className="p-6 border-b border-secondary-100 dark:border-secondary-800 bg-secondary-50/50 dark:bg-secondary-900/50">
                         <div className="flex items-center space-x-4">
-                            <div className="w-12 h-12 rounded-full bg-white dark:bg-secondary-800 border-2 border-primary-500 overflow-hidden shadow-sm">
+                            <div className="w-12 h-12 rounded-full bg-white dark:bg-secondary-800 border-2 border-primary-500 overflow-hidden shadow-sm relative">
                                 {session?.user?.image ? (
-                                    <img src={session.user.image} alt="Profile" className="w-full h-full object-cover" />
+                                    <NextImage src={session.user.image} alt="Profile" fill className="object-cover" sizes="48px" />
                                 ) : (
                                     <UserCircle className="w-full h-full text-secondary-300 dark:text-secondary-500" />
                                 )}
@@ -98,50 +99,47 @@ export default function DashboardLayout({
                                 <Link
                                     key={item.name}
                                     href={item.href}
-                                    onClick={() => setIsSidebarOpen(false)}
                                     className={clsx(
                                         "flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 group",
                                         isActive
-                                            ? "bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-400"
-                                            : "text-secondary-500 hover:bg-secondary-50 hover:text-secondary-900 dark:text-secondary-400 dark:hover:bg-secondary-800 dark:hover:text-white hover:pl-5"
+                                            ? "bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400 shadow-sm"
+                                            : "text-secondary-600 dark:text-secondary-400 hover:bg-secondary-50 dark:hover:bg-secondary-800 hover:text-secondary-900 dark:hover:text-white"
                                     )}
                                 >
-                                    <Icon className={clsx("w-5 h-5 mr-3 transition-colors", isActive ? "text-primary-600 dark:text-primary-400" : "text-secondary-400 group-hover:text-secondary-600 dark:text-secondary-500 dark:group-hover:text-white")} />
+                                    <Icon
+                                        className={clsx(
+                                            "mr-3 h-5 w-5 transition-colors",
+                                            isActive
+                                                ? "text-primary-600 dark:text-primary-400"
+                                                : "text-secondary-400 group-hover:text-secondary-600 dark:group-hover:text-secondary-300"
+                                        )}
+                                    />
                                     {item.name}
                                 </Link>
                             );
                         })}
                     </nav>
 
-                    <div className="p-4 border-t border-secondary-100 dark:border-secondary-800 bg-secondary-50/50 dark:bg-secondary-900/50 space-y-2">
+                    <div className="p-4 border-t border-secondary-100 dark:border-secondary-800 space-y-2">
+                        <div className="flex items-center justify-between px-4 py-2">
+                            <span className="text-sm font-medium text-secondary-600 dark:text-secondary-400">Theme</span>
+                            <button
+                                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                                className="p-2 rounded-lg bg-secondary-100 dark:bg-secondary-800 text-secondary-600 dark:text-secondary-400 hover:bg-secondary-200 dark:hover:bg-secondary-700 transition-colors"
+                            >
+                                {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                            </button>
+                        </div>
                         <button
-                            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                            className="flex items-center w-full px-4 py-3 text-sm font-medium text-secondary-600 rounded-xl hover:bg-secondary-100 dark:text-secondary-400 dark:hover:bg-secondary-800 transition-colors"
+                            onClick={() => signOut()}
+                            className="flex items-center w-full px-4 py-3 text-sm font-medium text-red-600 dark:text-red-400 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                         >
-                            {theme === "dark" ? (
-                                <Sun className="w-5 h-5 mr-3" />
-                            ) : (
-                                <Moon className="w-5 h-5 mr-3" />
-                            )}
-                            {theme === "dark" ? "Light Mode" : "Dark Mode"}
-                        </button>
-                        <button
-                            onClick={() => signOut({ callbackUrl: "/auth/signin" })}
-                            className="flex items-center w-full px-4 py-3 text-sm font-medium text-red-500 rounded-xl hover:bg-red-50 hover:text-red-600 dark:text-red-400 dark:hover:bg-red-900/20 dark:hover:text-red-300 transition-colors"
-                        >
-                            <LogOut className="w-5 h-5 mr-3" />
-                            Logout
+                            <LogOut className="mr-3 h-5 w-5" />
+                            Sign out
                         </button>
                     </div>
                 </div>
             </aside>
-
-            {/* Main Content */}
-            <main className="flex-1 p-4 lg:p-8 overflow-y-auto h-screen pt-20 lg:pt-8 bg-secondary-50 dark:bg-secondary-950">
-                <div className="max-w-7xl mx-auto">
-                    {children}
-                </div>
-            </main>
         </div>
     );
 }

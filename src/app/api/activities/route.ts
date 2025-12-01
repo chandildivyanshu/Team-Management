@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import dbConnect from "@/lib/mongodb";
 import Activity from "@/models/Activity";
 import User from "@/models/User";
@@ -93,7 +93,7 @@ export async function GET(req: Request) {
 
         // Process activities to sign URLs and filter expense
         const sanitizedActivities = await Promise.all(activities.map(async (act) => {
-            const doc = act.toObject();
+            const doc: any = act.toObject();
 
             // Filter expense
             if (session.user.role !== 'RBM' && doc.creatorId.toString() !== session.user.id) {
