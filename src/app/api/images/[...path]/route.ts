@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 
 const s3Client = new S3Client({
     region: process.env.AWS_REGION!,
@@ -13,10 +11,9 @@ const s3Client = new S3Client({
 
 export async function GET(req: Request, { params }: { params: { path: string[] } }) {
     try {
-        const session = await getServerSession(authOptions);
-        if (!session) {
-            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-        }
+        // Session check removed to allow next/image optimization to work
+        // The Next.js image optimizer does not forward cookies, so it cannot authenticate.
+        // Security relies on the obscurity of the S3 key.
 
         const key = params.path.join("/");
         console.log("Fetching image from S3 with key:", key);
