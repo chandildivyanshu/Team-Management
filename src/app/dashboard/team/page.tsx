@@ -24,6 +24,7 @@ const TeamNode = ({ member, onSelect, onDelete, refreshTrigger }: { member: Team
     const [expanded, setExpanded] = useState(false);
     const [children, setChildren] = useState<TeamMember[]>([]);
     const [loading, setLoading] = useState(false);
+    const [showId, setShowId] = useState(false);
 
     const fetchChildren = async () => {
         setLoading(true);
@@ -57,42 +58,50 @@ const TeamNode = ({ member, onSelect, onDelete, refreshTrigger }: { member: Team
     };
 
     return (
-        <div className="ml-6 relative">
+        <div className="ml-2 sm:ml-6 relative">
             {/* Connector Line */}
-            <div className="absolute left-[-1.5rem] top-0 bottom-0 w-px bg-secondary-200 dark:bg-secondary-800" />
+            <div className="absolute left-[-0.5rem] sm:left-[-1.5rem] top-0 bottom-0 w-px bg-secondary-200 dark:bg-secondary-800" />
 
             <div
-                className="relative flex items-center justify-between p-4 bg-white dark:bg-secondary-900 rounded-2xl shadow-sm border border-secondary-200 dark:border-secondary-800 mb-3 cursor-pointer hover:shadow-md hover:border-primary-200 dark:hover:border-primary-900 transition-all group"
+                className="relative flex items-center justify-between p-2 sm:p-4 bg-white dark:bg-secondary-900 rounded-2xl shadow-sm border border-secondary-200 dark:border-secondary-800 mb-2 sm:mb-3 cursor-pointer hover:shadow-md hover:border-primary-200 dark:hover:border-primary-900 transition-all group"
                 onClick={() => onSelect(member)}
             >
-                <div className="flex items-center">
+                <div className="flex items-center min-w-0 flex-1">
                     <button
                         onClick={handleExpand}
-                        className="mr-3 p-1.5 hover:bg-secondary-100 dark:hover:bg-secondary-800 rounded-full transition-colors"
+                        className="mr-1 sm:mr-3 p-1 sm:p-1.5 hover:bg-secondary-100 dark:hover:bg-secondary-800 rounded-full transition-colors flex-shrink-0"
                     >
                         {loading ? (
-                            <div className="animate-spin h-4 w-4 border-2 border-primary-500 rounded-full border-t-transparent"></div>
+                            <div className="animate-spin h-3 w-3 sm:h-4 sm:w-4 border-2 border-primary-500 rounded-full border-t-transparent"></div>
                         ) : expanded ? (
-                            <ChevronDown className="w-4 h-4 text-secondary-400 group-hover:text-primary-500 transition-colors" />
+                            <ChevronDown className="w-3 h-3 sm:w-4 sm:h-4 text-secondary-400 group-hover:text-primary-500 transition-colors" />
                         ) : (
-                            <ChevronRight className="w-4 h-4 text-secondary-400 group-hover:text-primary-500 transition-colors" />
+                            <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 text-secondary-400 group-hover:text-primary-500 transition-colors" />
                         )}
                     </button>
-                    <div className="w-12 h-12 rounded-full bg-primary-50 dark:bg-secondary-800 flex items-center justify-center mr-4 border-2 border-white dark:border-secondary-700 shadow-sm">
+                    <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-primary-50 dark:bg-secondary-800 flex items-center justify-center mr-2 sm:mr-4 border-2 border-white dark:border-secondary-700 shadow-sm flex-shrink-0">
                         {member.profilePicUrl ? (
                             <img src={member.profilePicUrl} alt={member.name} className="w-full h-full rounded-full object-cover" />
                         ) : (
-                            <User className="w-6 h-6 text-primary-500" />
+                            <User className="w-4 h-4 sm:w-6 sm:h-6 text-primary-500" />
                         )}
                     </div>
-                    <div>
-                        <h4 className="font-semibold text-secondary-900 dark:text-white group-hover:text-primary-600 transition-colors">{member.name}</h4>
-                        <div className="flex items-center mt-0.5">
-                            <span className="px-2 py-0.5 text-xs font-medium bg-secondary-100 dark:bg-secondary-800 text-secondary-600 dark:text-secondary-300 rounded-full">
+                    <div className="min-w-0 flex-1">
+                        <h4
+                            className="font-semibold text-sm sm:text-base text-secondary-900 dark:text-white group-hover:text-primary-600 transition-colors cursor-pointer active:text-primary-500 truncate"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setShowId(!showId);
+                            }}
+                        >
+                            {member.name}
+                        </h4>
+                        <div className="flex flex-wrap items-center mt-0.5 gap-y-1">
+                            <span className="px-1.5 py-0.5 text-[10px] sm:text-xs font-medium bg-secondary-100 dark:bg-secondary-800 text-secondary-600 dark:text-secondary-300 rounded-full whitespace-nowrap">
                                 {member.role}
                             </span>
-                            <span className="mx-2 text-secondary-300">•</span>
-                            <span className="text-xs text-secondary-500 font-mono">{member.empId}</span>
+                            <span className={clsx("mx-1 sm:mx-2 text-secondary-300", showId ? "inline" : "hidden sm:inline")}>•</span>
+                            <span className={clsx("text-[10px] sm:text-xs text-secondary-500 font-mono truncate", showId ? "inline" : "hidden sm:inline")}>{member.empId}</span>
                         </div>
                     </div>
                 </div>
@@ -103,20 +112,20 @@ const TeamNode = ({ member, onSelect, onDelete, refreshTrigger }: { member: Team
                             e.stopPropagation();
                             onDelete(member);
                         }}
-                        className="p-2 text-secondary-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full transition-colors"
+                        className="p-1.5 sm:p-2 ml-2 text-secondary-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full transition-colors flex-shrink-0"
                         title="Delete Employee"
                     >
-                        <Trash2 className="w-5 h-5" />
+                        <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
                     </button>
                 )}
             </div>
             {expanded && (
-                <div className="ml-6 pl-2">
+                <div className="ml-2 sm:ml-6 pl-2">
                     {children.map((child) => (
                         <TeamNode key={child._id} member={child} onSelect={onSelect} onDelete={onDelete} refreshTrigger={refreshTrigger} />
                     ))}
                     {children.length === 0 && !loading && (
-                        <div className="text-sm text-secondary-400 ml-6 py-2 italic">No direct reports</div>
+                        <div className="text-xs sm:text-sm text-secondary-400 ml-2 sm:ml-6 py-2 italic">No direct reports</div>
                     )}
                 </div>
             )}
