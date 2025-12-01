@@ -212,7 +212,7 @@ export default function ActivityDetailsModal({ activity, onClose, onDelete, onUp
                                             name="farmerMobile"
                                             value={formData.farmerMobile}
                                             onChange={handleInputChange}
-                                            className="w-full bg-white dark:bg-secondary-900 border border-secondary-200 dark:border-secondary-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500"
+                                            className="w-full bg-white dark:bg-secondary-900 border border-secondary-200 dark:border-secondary-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500 text-secondary-900 dark:text-white"
                                         />
                                     ) : (
                                         <div className="flex items-center font-medium text-secondary-900 dark:text-white">
@@ -229,7 +229,7 @@ export default function ActivityDetailsModal({ activity, onClose, onDelete, onUp
                                             name="cropOrHybrid"
                                             value={formData.cropOrHybrid}
                                             onChange={handleInputChange}
-                                            className="w-full bg-white dark:bg-secondary-900 border border-secondary-200 dark:border-secondary-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500"
+                                            className="w-full bg-white dark:bg-secondary-900 border border-secondary-200 dark:border-secondary-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500 text-secondary-900 dark:text-white"
                                         />
                                     ) : (
                                         <div className="font-medium text-secondary-900 dark:text-white">
@@ -254,7 +254,7 @@ export default function ActivityDetailsModal({ activity, onClose, onDelete, onUp
                                             name="farmersInvolved"
                                             value={formData.farmersInvolved}
                                             onChange={handleInputChange}
-                                            className="w-full bg-white dark:bg-secondary-900 border border-secondary-200 dark:border-secondary-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500"
+                                            className="w-full bg-white dark:bg-secondary-900 border border-secondary-200 dark:border-secondary-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500 text-secondary-900 dark:text-white"
                                         />
                                     ) : (
                                         <div className="flex items-center font-medium text-secondary-900 dark:text-white">
@@ -272,7 +272,7 @@ export default function ActivityDetailsModal({ activity, onClose, onDelete, onUp
                                                 name="tentativeExpense"
                                                 value={formData.tentativeExpense}
                                                 onChange={handleInputChange}
-                                                className="w-full bg-white dark:bg-secondary-900 border border-secondary-200 dark:border-secondary-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500"
+                                                className="w-full bg-white dark:bg-secondary-900 border border-secondary-200 dark:border-secondary-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500 text-secondary-900 dark:text-white"
                                             />
                                         ) : (
                                             <div className="flex items-center font-medium text-emerald-600 dark:text-emerald-400">
@@ -297,7 +297,7 @@ export default function ActivityDetailsModal({ activity, onClose, onDelete, onUp
                                     value={formData.description || ""}
                                     onChange={handleInputChange}
                                     rows={3}
-                                    className="w-full bg-white dark:bg-secondary-900 border border-secondary-200 dark:border-secondary-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                    className="w-full bg-white dark:bg-secondary-900 border border-secondary-200 dark:border-secondary-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent text-secondary-900 dark:text-white"
                                     placeholder="Add any additional notes..."
                                 />
                             </div>
