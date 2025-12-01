@@ -72,24 +72,24 @@ export default function Dashboard() {
 
     return (
         <DashboardLayout>
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
                     My Activities
                 </h2>
-                <div className="flex gap-3">
+                <div className="flex gap-3 w-full sm:w-auto">
                     <button
                         onClick={handleExport}
                         disabled={loading || activities.length === 0}
-                        className="flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex-1 sm:flex-none flex items-center justify-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
                     >
-                        <Download className="w-5 h-5 mr-2" />
-                        Export to Excel
+                        <Download className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                        Export
                     </button>
                     <Link
                         href="/dashboard/activities/create"
-                        className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                        className="flex-1 sm:flex-none flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm sm:text-base"
                     >
-                        <Plus className="w-5 h-5 mr-2" />
+                        <Plus className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                         New Activity
                     </Link>
                 </div>
@@ -120,6 +120,41 @@ export default function Dashboard() {
                 <ActivityDetailsModal
                     activity={selectedActivity}
                     onClose={() => setSelectedActivity(null)}
+                    onDelete={() => {
+                        setSelectedActivity(null);
+                        const fetchActivities = async () => {
+                            setLoading(true);
+                            try {
+                                const res = await fetch("/api/activities");
+                                const data = await res.json();
+                                if (data.activities) {
+                                    setActivities(data.activities);
+                                }
+                            } catch (error) {
+                                console.error("Failed to fetch activities", error);
+                            } finally {
+                                setLoading(false);
+                            }
+                        };
+                        fetchActivities();
+                    }}
+                    onUpdate={() => {
+                        const fetchActivities = async () => {
+                            setLoading(true);
+                            try {
+                                const res = await fetch("/api/activities");
+                                const data = await res.json();
+                                if (data.activities) {
+                                    setActivities(data.activities);
+                                }
+                            } catch (error) {
+                                console.error("Failed to fetch activities", error);
+                            } finally {
+                                setLoading(false);
+                            }
+                        };
+                        fetchActivities();
+                    }}
                 />
             )}
         </DashboardLayout>

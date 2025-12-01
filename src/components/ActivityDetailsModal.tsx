@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import NextImage from "next/image";
+import imageCompression from "browser-image-compression";
 
 interface ActivityDetailsModalProps {
     activity: any;
@@ -51,7 +52,22 @@ export default function ActivityDetailsModal({ activity, onClose, onDelete, onUp
             // 1. Upload new photos if any
             let uploadedPhotos: any[] = [];
             if (newFiles.length > 0) {
-                const uploadPromises = newFiles.map(async (file) => {
+                const uploadPromises = newFiles.map(async (originalFile) => {
+                    let file = originalFile;
+
+                    // Compress image
+                    try {
+                        const options = {
+                            maxSizeMB: 1,
+                            maxWidthOrHeight: 1920,
+                            useWebWorker: true,
+                        };
+                        const compressedFile = await imageCompression(file, options);
+                        file = compressedFile;
+                    } catch (error) {
+                        console.error("Compression failed, using original file", error);
+                    }
+
                     const res = await fetch("/api/uploads/presign", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -94,9 +110,13 @@ export default function ActivityDetailsModal({ activity, onClose, onDelete, onUp
         }
     };
 
-    const handleDelete = async () => {
-        if (!confirm("Are you sure you want to delete this activity?")) return;
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
+    const handleDeleteClick = () => {
+        setShowDeleteConfirm(true);
+    };
+
+    const confirmDelete = async () => {
         setDeleting(true);
         try {
             const res = await fetch(`/api/activities?id=${activity._id}`, {
@@ -115,6 +135,7 @@ export default function ActivityDetailsModal({ activity, onClose, onDelete, onUp
             toast.error("Error deleting activity");
         } finally {
             setDeleting(false);
+            setShowDeleteConfirm(false);
         }
     };
 
@@ -287,21 +308,7 @@ export default function ActivityDetailsModal({ activity, onClose, onDelete, onUp
                     </div>
 
                     <div className="mb-8">
-                        {isEditing ? (
-                            <div className="mb-4">
-                                <label className="block text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-2">
-                                    Description / Remarks
-                                </label>
-                                <textarea
-                                    name="description" // Assuming there is a description field, though not explicitly in model shown earlier, but good for UX
-                                    value={formData.description || ""}
-                                    onChange={handleInputChange}
-                                    rows={3}
-                                    className="w-full bg-white dark:bg-secondary-900 border border-secondary-200 dark:border-secondary-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent text-secondary-900 dark:text-white"
-                                    placeholder="Add any additional notes..."
-                                />
-                            </div>
-                        ) : (
+                        {!isEditing && (
                             activity.description && (
                                 <div className="bg-secondary-50 dark:bg-secondary-800/30 rounded-xl p-5 border border-secondary-100 dark:border-secondary-800 mb-6">
                                     <h3 className="text-sm font-semibold text-secondary-900 dark:text-white mb-2">Remarks</h3>
@@ -429,7 +436,7 @@ export default function ActivityDetailsModal({ activity, onClose, onDelete, onUp
                                 <>
                                     {isRBM && (
                                         <button
-                                            onClick={handleDelete}
+                                            onClick={handleDeleteClick}
                                             disabled={deleting}
                                             className="px-6 py-2.5 rounded-xl border border-red-200 dark:border-red-900/30 text-red-600 dark:text-red-400 font-medium hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors flex items-center disabled:opacity-70"
                                         >
@@ -459,6 +466,41 @@ export default function ActivityDetailsModal({ activity, onClose, onDelete, onUp
                     )}
                 </div>
             </div>
-        </div>
+            {/* Custom Delete Confirmation Modal */}
+            {
+                showDeleteConfirm && (
+                    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[60] p-4">
+                        <div className="bg-white dark:bg-secondary-900 rounded-2xl shadow-2xl border border-secondary-200 dark:border-secondary-800 p-6 w-full max-w-sm transform transition-all scale-100">
+                            <div className="flex flex-col items-center text-center">
+                                <div className="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mb-4">
+                                    <Trash2 className="w-6 h-6 text-red-600 dark:text-red-400" />
+                                </div>
+                                <h3 className="text-xl font-bold text-secondary-900 dark:text-white mb-2">
+                                    Delete Activity?
+                                </h3>
+                                <p className="text-secondary-600 dark:text-secondary-300 mb-6 text-sm">
+                                    Are you sure you want to delete this activity? This action cannot be undone.
+                                </p>
+                                <div className="flex space-x-3 w-full">
+                                    <button
+                                        onClick={() => setShowDeleteConfirm(false)}
+                                        className="flex-1 px-4 py-2.5 text-sm font-medium text-secondary-700 bg-white border border-secondary-300 rounded-xl hover:bg-secondary-50 dark:bg-secondary-800 dark:text-secondary-300 dark:border-secondary-700 dark:hover:bg-secondary-700 transition-colors"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        onClick={confirmDelete}
+                                        disabled={deleting}
+                                        className="flex-1 px-4 py-2.5 text-sm font-medium text-white bg-red-600 rounded-xl hover:bg-red-700 disabled:opacity-50 shadow-lg shadow-red-600/20 transition-all hover:scale-105"
+                                    >
+                                        {deleting ? "Deleting..." : "Delete"}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )
+            }
+        </div >
     );
 }

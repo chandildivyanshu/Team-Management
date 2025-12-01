@@ -43,7 +43,7 @@ export default function DashboardLayout({
             {/* Mobile Header */}
             <div className="lg:hidden fixed top-0 left-0 right-0 z-50 flex items-center justify-between p-4 bg-white dark:bg-secondary-900 shadow-md">
                 <span className="text-xl font-bold text-primary-600">Team Organizer</span>
-                <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-secondary-800">
+                <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-secondary-800 text-secondary-600 dark:text-white">
                     {isSidebarOpen ? <X /> : <Menu />}
                 </button>
             </div>
@@ -131,7 +131,7 @@ export default function DashboardLayout({
                             </button>
                         </div>
                         <button
-                            onClick={() => signOut()}
+                            onClick={() => signOut({ callbackUrl: '/auth/signin' })}
                             className="flex items-center w-full px-4 py-3 text-sm font-medium text-red-600 dark:text-red-400 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                         >
                             <LogOut className="mr-3 h-5 w-5" />
