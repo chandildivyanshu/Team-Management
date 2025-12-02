@@ -24,7 +24,6 @@ const TeamNode = ({ member, onSelect, onDelete, refreshTrigger }: { member: Team
     const [expanded, setExpanded] = useState(false);
     const [children, setChildren] = useState<TeamMember[]>([]);
     const [loading, setLoading] = useState(false);
-    const [showId, setShowId] = useState(false);
 
     const fetchChildren = async () => {
         setLoading(true);
@@ -87,21 +86,15 @@ const TeamNode = ({ member, onSelect, onDelete, refreshTrigger }: { member: Team
                         )}
                     </div>
                     <div className="min-w-0 flex-1">
-                        <h4
-                            className="font-semibold text-sm sm:text-base text-secondary-900 dark:text-white group-hover:text-primary-600 transition-colors cursor-pointer active:text-primary-500 truncate"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setShowId(!showId);
-                            }}
-                        >
+                        <h4 className="font-semibold text-sm sm:text-base text-secondary-900 dark:text-white group-hover:text-primary-600 transition-colors truncate">
                             {member.name}
                         </h4>
                         <div className="flex flex-wrap items-center mt-0.5 gap-y-1">
                             <span className="px-1.5 py-0.5 text-[10px] sm:text-xs font-medium bg-secondary-100 dark:bg-secondary-800 text-secondary-600 dark:text-secondary-300 rounded-full whitespace-nowrap">
                                 {member.role}
                             </span>
-                            <span className={clsx("mx-1 sm:mx-2 text-secondary-300", showId ? "inline" : "hidden sm:inline")}>•</span>
-                            <span className={clsx("text-[10px] sm:text-xs text-secondary-500 font-mono truncate", showId ? "inline" : "hidden sm:inline")}>{member.empId}</span>
+                            <span className="mx-1 sm:mx-2 text-secondary-300 hidden sm:inline">•</span>
+                            <span className="text-[10px] sm:text-xs text-secondary-500 font-mono truncate hidden sm:inline">{member.empId}</span>
                         </div>
                     </div>
                 </div>
