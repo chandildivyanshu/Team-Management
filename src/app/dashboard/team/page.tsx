@@ -289,6 +289,11 @@ export default function Team() {
                 const data = await res.json();
                 toast.success(`User created successfully! Emp ID: ${data.empId}`);
                 setIsModalOpen(false);
+                setCreatedMemberCredentials({
+                    name: formData.name,
+                    empId: data.empId,
+                    password: formData.password
+                });
                 setFormData({ name: "", mobile: "", password: "" });
                 fetchTeam(); // Refresh list
             } else {
@@ -303,6 +308,7 @@ export default function Team() {
         }
     };
 
+    const [createdMemberCredentials, setCreatedMemberCredentials] = useState<{ name: string; empId: string; password: string } | null>(null);
     const [memberToDelete, setMemberToDelete] = useState<TeamMember | null>(null);
     const [deleteConfirmationName, setDeleteConfirmationName] = useState("");
     const [isDeleting, setIsDeleting] = useState(false);
@@ -883,6 +889,53 @@ export default function Team() {
                         />
                     )
                 }
+
+                {/* Account Created Success Modal */}
+                {createdMemberCredentials && (
+                    <div className="fixed inset-0 bg-secondary-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                        <div className="bg-white dark:bg-secondary-900 rounded-2xl shadow-2xl border border-secondary-200 dark:border-secondary-800 p-8 w-full max-w-md transform transition-all scale-100">
+                            <div className="text-center mb-6">
+                                <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <User className="w-8 h-8 text-green-600 dark:text-green-400" />
+                                </div>
+                                <h3 className="text-2xl font-bold text-secondary-900 dark:text-white mb-2">
+                                    Account Created!
+                                </h3>
+                                <p className="text-secondary-500 dark:text-secondary-400">
+                                    Share these credentials with your team member.
+                                </p>
+                            </div>
+
+                            <div className="bg-secondary-50 dark:bg-secondary-800 rounded-xl p-6 mb-6 border border-secondary-100 dark:border-secondary-700">
+                                <div className="space-y-4">
+                                    <div>
+                                        <label className="text-xs font-semibold text-secondary-400 uppercase tracking-wider block mb-1">Name</label>
+                                        <p className="font-medium text-secondary-900 dark:text-white text-lg">{createdMemberCredentials.name}</p>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="text-xs font-semibold text-secondary-400 uppercase tracking-wider block mb-1">Employee ID</label>
+                                            <p className="font-mono font-bold text-primary-600 dark:text-primary-400 text-lg">{createdMemberCredentials.empId}</p>
+                                        </div>
+                                        <div>
+                                            <label className="text-xs font-semibold text-secondary-400 uppercase tracking-wider block mb-1">Password</label>
+                                            <p className="font-mono font-bold text-secondary-900 dark:text-white text-lg">{createdMemberCredentials.password}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="flex justify-center">
+                                <button
+                                    onClick={() => setCreatedMemberCredentials(null)}
+                                    className="px-6 py-2.5 text-sm font-medium text-white bg-primary-600 rounded-xl hover:bg-primary-700 shadow-lg shadow-primary-600/20 transition-all hover:scale-105 w-full"
+                                >
+                                    Done
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div >
         </DashboardLayout >
     );
