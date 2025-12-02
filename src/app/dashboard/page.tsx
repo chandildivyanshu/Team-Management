@@ -79,7 +79,7 @@ export default function Dashboard() {
                 <div className="flex gap-3 w-full sm:w-auto">
                     <button
                         onClick={handleExport}
-                        disabled={loading || activities.length === 0}
+                        disabled={loading}
                         className="flex-1 sm:flex-none flex items-center justify-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
                     >
                         <Download className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
