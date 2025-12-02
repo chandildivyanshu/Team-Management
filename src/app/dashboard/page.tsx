@@ -55,6 +55,8 @@ export default function Dashboard() {
                 "Crop/Hybrid": act.cropOrHybrid,
                 "Farmers Involved": act.farmersInvolved,
                 "Tentative Expense": act.tentativeExpense || "N/A",
+                "Activity Type": act.activityType || "Special", // Default to Special for old data
+                "Contact Type": act.contactType || "N/A",
             }));
 
             const ws = XLSX.utils.json_to_sheet(dataToExport);

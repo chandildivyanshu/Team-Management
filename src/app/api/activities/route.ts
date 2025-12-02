@@ -15,10 +15,20 @@ export async function POST(req: Request) {
         const body = await req.json();
 
         // Validate required fields
-        const requiredFields = ['farmerName', 'farmerMobile', 'village', 'taluka', 'district', 'cropOrHybrid', 'farmersInvolved', 'tentativeExpense', 'photos'];
-        for (const field of requiredFields) {
+        const commonFields = ['farmerName', 'farmerMobile', 'village', 'taluka', 'district', 'cropOrHybrid', 'farmersInvolved', 'tentativeExpense', 'activityType'];
+        for (const field of commonFields) {
             if (!body[field]) {
                 return NextResponse.json({ error: `Missing field: ${field}` }, { status: 400 });
+            }
+        }
+
+        if (body.activityType === 'Special') {
+            if (!body.photos || body.photos.length === 0) {
+                return NextResponse.json({ error: "Photos are required for Special Activity" }, { status: 400 });
+            }
+        } else if (body.activityType === 'General') {
+            if (!body.contactType) {
+                return NextResponse.json({ error: "Contact Type is required for General Activity" }, { status: 400 });
             }
         }
 
