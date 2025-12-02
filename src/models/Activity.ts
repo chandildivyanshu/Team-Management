@@ -11,7 +11,8 @@ export interface IActivity extends Document {
     district: string;
     cropOrHybrid: string;
     farmersInvolved: number;
-    tentativeExpense: number;
+    tentativeExpense?: number;
+    remarks?: string;
     activityType: 'General' | 'Special';
     contactType?: 'Calling' | 'Direct';
     photos: { url: string; key: string }[];
@@ -34,7 +35,13 @@ const ActivitySchema: Schema = new Schema(
         district: { type: String, required: true },
         cropOrHybrid: { type: String, required: true },
         farmersInvolved: { type: Number, required: true },
-        tentativeExpense: { type: Number, required: true },
+        tentativeExpense: {
+            type: Number,
+            required: function (this: any) {
+                return this.activityType === 'Special';
+            }
+        },
+        remarks: { type: String },
         activityType: {
             type: String,
             enum: ['General', 'Special'],

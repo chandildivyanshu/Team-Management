@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 import DashboardLayout from "@/components/DashboardLayout";
 import ActivityCard from "@/components/ActivityCard";
 import ActivityDetailsModal from "@/components/ActivityDetailsModal";
@@ -10,6 +11,7 @@ import * as XLSX from "xlsx";
 import { toast } from "react-hot-toast";
 
 export default function Dashboard() {
+    const { data: session } = useSession();
     const [activities, setActivities] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedActivity, setSelectedActivity] = useState<any>(null);
@@ -43,21 +45,29 @@ export default function Dashboard() {
                 return;
             }
 
-            const dataToExport = data.activities.map((act: any) => ({
-                "Created Date": new Date(act.createdAt).toLocaleDateString(),
-                "Created By": act.creatorId?.name || "Unknown",
-                "Creator ID": act.creatorId?.empId || "Unknown",
-                "Farmer Name": act.farmerName,
-                "Farmer Mobile": act.farmerMobile,
-                "Village": act.village,
-                "Taluka": act.taluka,
-                "District": act.district,
-                "Crop/Hybrid": act.cropOrHybrid,
-                "Farmers Involved": act.farmersInvolved,
-                "Tentative Expense": act.tentativeExpense || "N/A",
-                "Activity Type": act.activityType || "Special", // Default to Special for old data
-                "Contact Type": act.contactType || "N/A",
-            }));
+            const dataToExport = data.activities.map((act: any) => {
+                const exportData: any = {
+                    "Created Date": new Date(act.createdAt).toLocaleDateString(),
+                    "Created By": act.creatorId?.name || "Unknown",
+                    "Creator ID": act.creatorId?.empId || "Unknown",
+                    "Farmer Name": act.farmerName,
+                    "Farmer Mobile": act.farmerMobile,
+                    "Village": act.village,
+                    "Taluka": act.taluka,
+                    "District": act.district,
+                    "Crop/Hybrid": act.cropOrHybrid,
+                    "Farmers Involved": act.farmersInvolved,
+                    "Activity Type": act.activityType || "Special", // Default to Special for old data
+                    "Contact Type": act.contactType || "N/A",
+                    "Remarks": act.remarks || "N/A",
+                };
+
+                if (session?.user?.role === 'RBM') {
+                    exportData["Tentative Expense"] = act.tentativeExpense || "N/A";
+                }
+
+                return exportData;
+            });
 
             const ws = XLSX.utils.json_to_sheet(dataToExport);
             const wb = XLSX.utils.book_new();

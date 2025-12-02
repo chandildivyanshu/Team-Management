@@ -20,8 +20,10 @@ export default function CreateActivity() {
         district: "",
         cropOrHybrid: "",
         farmersInvolved: "",
+
         tentativeExpense: "",
         contactType: "Direct", // Default for General
+        remarks: "",
     });
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -117,7 +119,8 @@ export default function CreateActivity() {
                     activityType,
                     contactType: activityType === 'General' ? formData.contactType : undefined,
                     farmersInvolved: Number(formData.farmersInvolved),
-                    tentativeExpense: Number(formData.tentativeExpense),
+                    tentativeExpense: activityType === 'Special' ? Number(formData.tentativeExpense) : undefined,
+                    remarks: formData.remarks,
                     photos: uploadedPhotos,
                 }),
             });
@@ -260,18 +263,22 @@ export default function CreateActivity() {
                                 onChange={handleInputChange}
                             />
                         </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                Tentative Expense (₹)
-                            </label>
-                            <input
-                                type="number"
-                                name="tentativeExpense"
-                                required
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm p-2 border"
-                                onChange={handleInputChange}
-                            />
-                        </div>
+
+                        {activityType === 'Special' && (
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Tentative Expense (₹)
+                                </label>
+                                <input
+                                    type="number"
+                                    name="tentativeExpense"
+                                    required
+                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm p-2 border"
+                                    onChange={handleInputChange}
+                                />
+                            </div>
+                        )}
+
                         {activityType === 'General' && (
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -288,6 +295,18 @@ export default function CreateActivity() {
                                 </select>
                             </div>
                         )}
+
+                        <div className="md:col-span-2">
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Remarks
+                            </label>
+                            <textarea
+                                name="remarks"
+                                rows={3}
+                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm p-2 border"
+                                onChange={(e) => setFormData({ ...formData, remarks: e.target.value })}
+                            />
+                        </div>
                     </div>
 
                     {activityType === 'Special' && (

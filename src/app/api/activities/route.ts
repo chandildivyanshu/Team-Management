@@ -15,7 +15,7 @@ export async function POST(req: Request) {
         const body = await req.json();
 
         // Validate required fields
-        const commonFields = ['farmerName', 'farmerMobile', 'village', 'taluka', 'district', 'cropOrHybrid', 'farmersInvolved', 'tentativeExpense', 'activityType'];
+        const commonFields = ['farmerName', 'farmerMobile', 'village', 'taluka', 'district', 'cropOrHybrid', 'farmersInvolved', 'activityType'];
         for (const field of commonFields) {
             if (!body[field]) {
                 return NextResponse.json({ error: `Missing field: ${field}` }, { status: 400 });
@@ -25,6 +25,9 @@ export async function POST(req: Request) {
         if (body.activityType === 'Special') {
             if (!body.photos || body.photos.length === 0) {
                 return NextResponse.json({ error: "Photos are required for Special Activity" }, { status: 400 });
+            }
+            if (!body.tentativeExpense) {
+                return NextResponse.json({ error: "Tentative Expense is required for Special Activity" }, { status: 400 });
             }
         } else if (body.activityType === 'General') {
             if (!body.contactType) {
