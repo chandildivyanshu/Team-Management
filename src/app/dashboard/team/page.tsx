@@ -19,7 +19,7 @@ interface TeamMember {
     profilePicUrl?: string;
 }
 
-const TeamNode = ({ member, onSelect, onDelete, refreshTrigger }: { member: TeamMember; onSelect: (m: TeamMember) => void; onDelete: (m: TeamMember) => void; refreshTrigger: number }) => {
+const TeamNode = ({ member, rootMember, onSelect, onDelete, refreshTrigger }: { member: TeamMember; rootMember?: TeamMember; onSelect: (m: TeamMember, root: TeamMember) => void; onDelete: (m: TeamMember) => void; refreshTrigger: number }) => {
     const { data: session } = useSession();
     const [expanded, setExpanded] = useState(false);
     const [children, setChildren] = useState<TeamMember[]>([]);
@@ -56,6 +56,8 @@ const TeamNode = ({ member, onSelect, onDelete, refreshTrigger }: { member: Team
         setExpanded(true);
     };
 
+    const effectiveRoot = rootMember || member;
+
     return (
         <div className="ml-2 sm:ml-6 relative">
             {/* Connector Line */}
@@ -63,7 +65,7 @@ const TeamNode = ({ member, onSelect, onDelete, refreshTrigger }: { member: Team
 
             <div
                 className="relative flex items-center justify-between p-2 sm:p-4 bg-white dark:bg-secondary-900 rounded-2xl shadow-sm border border-secondary-200 dark:border-secondary-800 mb-2 sm:mb-3 cursor-pointer hover:shadow-md hover:border-primary-200 dark:hover:border-primary-900 transition-all group"
-                onClick={() => onSelect(member)}
+                onClick={() => onSelect(member, effectiveRoot)}
             >
                 <div className="flex items-center min-w-0 flex-1">
                     <button
@@ -115,7 +117,7 @@ const TeamNode = ({ member, onSelect, onDelete, refreshTrigger }: { member: Team
             {expanded && (
                 <div className="ml-2 sm:ml-6 pl-2">
                     {children.map((child) => (
-                        <TeamNode key={child._id} member={child} onSelect={onSelect} onDelete={onDelete} refreshTrigger={refreshTrigger} />
+                        <TeamNode key={child._id} member={child} rootMember={effectiveRoot} onSelect={onSelect} onDelete={onDelete} refreshTrigger={refreshTrigger} />
                     ))}
                     {children.length === 0 && !loading && (
                         <div className="text-xs sm:text-sm text-secondary-400 ml-2 sm:ml-6 py-2 italic">No direct reports</div>
@@ -130,6 +132,7 @@ export default function Team() {
     const { data: session } = useSession();
     const [team, setTeam] = useState<TeamMember[]>([]);
     const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
+    const [statsContextMember, setStatsContextMember] = useState<TeamMember | null>(null);
     const [memberHistory, setMemberHistory] = useState<TeamMember[]>([]);
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -207,11 +210,11 @@ export default function Team() {
                 }
 
                 // Always show stats for the direct report (root of the drill-down)
-                const statsContextMember = memberHistory.length > 0 ? memberHistory[0] : selectedMember;
+                const context = statsContextMember || (memberHistory.length > 0 ? memberHistory[0] : selectedMember);
 
                 setStatsLoading(true);
                 try {
-                    const res = await fetch(`/api/analytics/team-stats?managerId=${statsContextMember._id}`);
+                    const res = await fetch(`/api/analytics/team-stats?managerId=${context._id}`);
                     const data = await res.json();
                     if (data.total !== undefined) {
                         setTeamStats(data);
@@ -232,8 +235,9 @@ export default function Team() {
             setDirectReports([]);
             setDailyPlans([]);
             setTeamStats(null);
+            setStatsContextMember(null);
         }
-    }, [selectedMember, memberHistory]);
+    }, [selectedMember, memberHistory, statsContextMember]);
 
     const fetchTeam = async () => {
         try {
@@ -421,7 +425,17 @@ export default function Team() {
                             ) : team.length > 0 ? (
                                 <div className="space-y-2">
                                     {team.map((member) => (
-                                        <TeamNode key={member._id} member={member} onSelect={setSelectedMember} onDelete={setMemberToDelete} refreshTrigger={refreshTrigger} />
+                                        <TeamNode
+                                            key={member._id}
+                                            member={member}
+                                            onSelect={(m, root) => {
+                                                setSelectedMember(m);
+                                                setStatsContextMember(root);
+                                                setMemberHistory([]);
+                                            }}
+                                            onDelete={setMemberToDelete}
+                                            refreshTrigger={refreshTrigger}
+                                        />
                                     ))}
                                 </div>
                             ) : (
@@ -496,6 +510,8 @@ export default function Team() {
                                         <button
                                             onClick={() => {
                                                 setSelectedMember(null);
+                                                setSelectedMember(null);
+                                                setStatsContextMember(null);
                                                 setMemberHistory([]);
                                             }}
                                         >

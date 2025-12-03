@@ -39,9 +39,9 @@ export default function DashboardLayout({
     ];
 
     return (
-        <div className="min-h-screen bg-secondary-50 dark:bg-secondary-950 flex font-sans">
+        <div className="h-screen overflow-hidden bg-secondary-50 dark:bg-secondary-950 flex flex-col lg:flex-row font-sans">
             {/* Mobile Header */}
-            <div className="lg:hidden fixed top-0 left-0 right-0 z-50 flex items-center justify-between p-4 bg-white dark:bg-secondary-900 shadow-md">
+            <div className="lg:hidden flex-none flex items-center justify-between p-4 bg-white dark:bg-secondary-900 shadow-md z-50">
                 <span className="text-xl font-bold text-primary-600">Team Organizer</span>
                 <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-secondary-800 text-secondary-600 dark:text-white">
                     {isSidebarOpen ? <X /> : <Menu />}
@@ -142,7 +142,7 @@ export default function DashboardLayout({
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 overflow-y-auto p-8 lg:p-12 mt-16 lg:mt-0">
+            <main className="flex-1 overflow-y-auto p-4 sm:p-8 lg:p-12">
                 <div className="max-w-7xl mx-auto">
                     {children}
                 </div>
