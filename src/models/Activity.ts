@@ -14,7 +14,7 @@ export interface IActivity extends Document {
     tentativeExpense?: number;
     remarks?: string;
     activityType: 'General' | 'Special';
-    contactType?: 'Calling' | 'Direct';
+    contactType: 'Calling' | 'Direct' | 'Meeting' | 'Field Day';
     photos: { url: string; key: string }[];
     publishedAt?: Date;
     isPublished: boolean;
@@ -50,10 +50,8 @@ const ActivitySchema: Schema = new Schema(
         },
         contactType: {
             type: String,
-            enum: ['Calling', 'Direct'],
-            required: function (this: any) {
-                return this.activityType === 'General';
-            }
+            enum: ['Calling', 'Direct', 'Meeting', 'Field Day'],
+            required: true
         },
         photos: [
             {

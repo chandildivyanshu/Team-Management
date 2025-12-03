@@ -200,14 +200,18 @@ export default function Team() {
             };
 
             const fetchTeamStats = async () => {
-                // Only RBMs can see stats, and only for Area Managers
-                if (session?.user?.role !== 'RBM' || selectedMember.role !== 'AreaManager') {
+                // MDOs cannot see stats
+                if (session?.user?.role === 'MDO') {
                     setTeamStats(null);
                     return;
                 }
+
+                // Always show stats for the direct report (root of the drill-down)
+                const statsContextMember = memberHistory.length > 0 ? memberHistory[0] : selectedMember;
+
                 setStatsLoading(true);
                 try {
-                    const res = await fetch(`/api/analytics/team-stats?managerId=${selectedMember._id}`);
+                    const res = await fetch(`/api/analytics/team-stats?managerId=${statsContextMember._id}`);
                     const data = await res.json();
                     if (data.total !== undefined) {
                         setTeamStats(data);
@@ -229,7 +233,7 @@ export default function Team() {
             setDailyPlans([]);
             setTeamStats(null);
         }
-    }, [selectedMember]);
+    }, [selectedMember, memberHistory]);
 
     const fetchTeam = async () => {
         try {
@@ -533,15 +537,19 @@ export default function Team() {
                                                             <span className="text-xs text-primary-100 opacity-80">Total Activities</span>
                                                         </div>
                                                     </div>
-                                                    <div className="grid grid-cols-3 gap-2 text-center text-xs">
-                                                        <div className="bg-white/10 rounded-lg p-2 backdrop-blur-sm border border-white/10">
-                                                            <div className="font-bold text-lg">{teamStats.breakdown.AreaManager || 0}</div>
-                                                            <div className="text-primary-100 opacity-80">AM</div>
-                                                        </div>
-                                                        <div className="bg-white/10 rounded-lg p-2 backdrop-blur-sm border border-white/10">
-                                                            <div className="font-bold text-lg">{teamStats.breakdown.TerritoryManager || 0}</div>
-                                                            <div className="text-primary-100 opacity-80">TM</div>
-                                                        </div>
+                                                    <div className={`grid gap-2 text-center text-xs ${session?.user?.role === 'RBM' ? 'grid-cols-3' : session?.user?.role === 'AreaManager' ? 'grid-cols-2' : 'grid-cols-1'}`}>
+                                                        {session?.user?.role === 'RBM' && (
+                                                            <div className="bg-white/10 rounded-lg p-2 backdrop-blur-sm border border-white/10">
+                                                                <div className="font-bold text-lg">{teamStats.breakdown.AreaManager || 0}</div>
+                                                                <div className="text-primary-100 opacity-80">AM</div>
+                                                            </div>
+                                                        )}
+                                                        {(session?.user?.role === 'RBM' || session?.user?.role === 'AreaManager') && (
+                                                            <div className="bg-white/10 rounded-lg p-2 backdrop-blur-sm border border-white/10">
+                                                                <div className="font-bold text-lg">{teamStats.breakdown.TerritoryManager || 0}</div>
+                                                                <div className="text-primary-100 opacity-80">TM</div>
+                                                            </div>
+                                                        )}
                                                         <div className="bg-white/10 rounded-lg p-2 backdrop-blur-sm border border-white/10">
                                                             <div className="font-bold text-lg">{teamStats.breakdown.MDO || 0}</div>
                                                             <div className="text-primary-100 opacity-80">MDO</div>

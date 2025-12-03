@@ -22,7 +22,7 @@ export default function CreateActivity() {
         farmersInvolved: "",
 
         tentativeExpense: "",
-        contactType: "Direct", // Default for General
+        contactType: "Meeting", // Default for Special
         remarks: "",
     });
 
@@ -117,7 +117,7 @@ export default function CreateActivity() {
                 body: JSON.stringify({
                     ...formData,
                     activityType,
-                    contactType: activityType === 'General' ? formData.contactType : undefined,
+                    contactType: formData.contactType,
                     farmersInvolved: Number(formData.farmersInvolved),
                     tentativeExpense: activityType === 'Special' ? Number(formData.tentativeExpense) : undefined,
                     remarks: formData.remarks,
@@ -156,7 +156,10 @@ export default function CreateActivity() {
                     <div className="bg-gray-100 dark:bg-gray-700 p-1 rounded-lg inline-flex">
                         <button
                             type="button"
-                            onClick={() => setActivityType('Special')}
+                            onClick={() => {
+                                setActivityType('Special');
+                                setFormData({ ...formData, contactType: 'Meeting' });
+                            }}
                             className={`px-6 py-2 rounded-md text-sm font-medium transition-all ${activityType === 'Special'
                                 ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-white shadow-sm'
                                 : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
@@ -166,7 +169,10 @@ export default function CreateActivity() {
                         </button>
                         <button
                             type="button"
-                            onClick={() => setActivityType('General')}
+                            onClick={() => {
+                                setActivityType('General');
+                                setFormData({ ...formData, contactType: 'Direct' });
+                            }}
                             className={`px-6 py-2 rounded-md text-sm font-medium transition-all ${activityType === 'General'
                                 ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-white shadow-sm'
                                 : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
@@ -276,6 +282,23 @@ export default function CreateActivity() {
                                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm p-2 border"
                                     onChange={handleInputChange}
                                 />
+                            </div>
+                        )}
+
+                        {activityType === 'Special' && (
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Contact Type
+                                </label>
+                                <select
+                                    name="contactType"
+                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm p-2 border"
+                                    value={formData.contactType}
+                                    onChange={(e) => setFormData({ ...formData, contactType: e.target.value })}
+                                >
+                                    <option value="Meeting">Meeting</option>
+                                    <option value="Field Day">Field Day</option>
+                                </select>
                             </div>
                         )}
 

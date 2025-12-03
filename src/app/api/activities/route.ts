@@ -29,9 +29,12 @@ export async function POST(req: Request) {
             if (!body.tentativeExpense) {
                 return NextResponse.json({ error: "Tentative Expense is required for Special Activity" }, { status: 400 });
             }
+            if (!body.contactType || !['Meeting', 'Field Day'].includes(body.contactType)) {
+                return NextResponse.json({ error: "Valid Contact Type (Meeting/Field Day) is required for Special Activity" }, { status: 400 });
+            }
         } else if (body.activityType === 'General') {
-            if (!body.contactType) {
-                return NextResponse.json({ error: "Contact Type is required for General Activity" }, { status: 400 });
+            if (!body.contactType || !['Calling', 'Direct'].includes(body.contactType)) {
+                return NextResponse.json({ error: "Valid Contact Type (Calling/Direct) is required for General Activity" }, { status: 400 });
             }
         }
 
