@@ -1,7 +1,7 @@
 import { IActivity } from "@/models/Activity";
 import { format } from "date-fns";
 import { MapPin, Users, IndianRupee } from "lucide-react";
-import NextImage from "next/image";
+
 
 interface ActivityCardProps {
     activity: any; // Using any for now to avoid strict type issues with serialized JSON
@@ -37,12 +37,10 @@ export default function ActivityCard({ activity, onClick }: ActivityCardProps) {
                     <div className="grid grid-cols-2 gap-2 mb-4">
                         {activity.photos.slice(0, 2).map((photo: any, index: number) => (
                             <div key={index} className="aspect-video relative rounded-lg overflow-hidden bg-secondary-100 dark:bg-secondary-800">
-                                <NextImage
+                                <img
                                     src={photo.url}
                                     alt={`Activity photo ${index + 1}`}
-                                    fill
-                                    className="object-cover transition-transform duration-500 group-hover:scale-110"
-                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                                 />
                             </div>
                         ))}

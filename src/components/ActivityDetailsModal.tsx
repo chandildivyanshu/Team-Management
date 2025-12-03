@@ -3,7 +3,7 @@ import { X, MapPin, Calendar, User, Phone, IndianRupee, Trash2, Edit, Save, Uplo
 import { useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
-import NextImage from "next/image";
+
 import imageCompression from "browser-image-compression";
 
 interface ActivityDetailsModalProps {
@@ -329,12 +329,10 @@ export default function ActivityDetailsModal({ activity, onClose, onDelete, onUp
                                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                                     {formData.photos.map((photo: any, index: number) => (
                                         <div key={index} className="relative aspect-video group rounded-xl overflow-hidden shadow-sm border border-secondary-200 dark:border-secondary-800">
-                                            <NextImage
+                                            <img
                                                 src={photo.url}
                                                 alt={`Activity photo ${index + 1}`}
-                                                fill
-                                                className="object-cover transition-transform duration-500 group-hover:scale-110"
-                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                                             />
                                             {isEditing ? (
                                                 <button

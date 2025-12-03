@@ -18,7 +18,7 @@ import {
 import { useState } from "react";
 import clsx from "clsx";
 import { useTheme } from "@/components/ThemeProvider";
-import NextImage from "next/image";
+
 
 export default function DashboardLayout({
     children,
@@ -74,7 +74,7 @@ export default function DashboardLayout({
                         <div className="flex items-center space-x-4">
                             <div className="w-12 h-12 rounded-full bg-white dark:bg-secondary-800 border-2 border-primary-500 overflow-hidden shadow-sm relative">
                                 {session?.user?.image ? (
-                                    <NextImage src={session.user.image} alt="Profile" fill className="object-cover" sizes="48px" />
+                                    <img src={session.user.image} alt="Profile" className="w-full h-full object-cover" />
                                 ) : (
                                     <UserCircle className="w-full h-full text-secondary-300 dark:text-secondary-500" />
                                 )}
