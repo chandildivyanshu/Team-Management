@@ -14,6 +14,7 @@ import {
     X,
     Sun,
     Moon,
+    Briefcase,
 } from "lucide-react";
 import { useState } from "react";
 import clsx from "clsx";
@@ -35,6 +36,7 @@ export default function DashboardLayout({
         { name: "Team", href: "/dashboard/team", icon: Users, hidden: session?.user?.role === "MDO" },
         { name: "Daily Plan", href: "/dashboard/daily-plan", icon: Calendar },
         { name: "YouTube Channel", href: "/dashboard/youtube", icon: Youtube },
+        { name: "Portfolios", href: "/dashboard/portfolios", icon: Briefcase },
         { name: "Account", href: "/dashboard/account", icon: UserCircle },
     ];
 
